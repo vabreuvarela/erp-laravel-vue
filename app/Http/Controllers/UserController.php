@@ -16,32 +16,38 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function store(Request $request, StoreUserRequest $validatedRequest)
+    public function store(StoreUserRequest $request)
     {
-        return response()->json(User::createOrUpdateItem($validatedRequest), 200);
+        return response()->json([ 'data' => [ User::createOrUpdateItem($request) ] ], 200);
     }
 
     public function show(User $user)
     {
-        return response()->json($user, 200);
+        return response()->json([ 'data' => [ $user ] ], 200);
     }
 
     public function update(UpdateUserRequest $request, User $user)
     {
-        return response()->json(User::createOrUpdateItem($request, $user), 200);
+        return response()->json([ 'data' => [ User::createOrUpdateItem($request, $user) ] ], 200);
     }
 
     public function destroy(User $user)
     {
         return $user->delete()
-            ? response()->json([], 200)
-            : response()->json([], 400);
+            ? response()->json([ 'message' => $user->id . trans('messages.deleted.success') ], 200)
+            : response()->json([
+                "message" => $user->id . trans('messages.deleted.failed'),
+                "errors" => []
+            ], 400);
     }
 
     public function restore(User $user)
     {
         return $user->restore()
-            ? response()->json([], 200)
-            : response()->json([], 400);
+            ? response()->json([ 'message' => $user->id . trans('messages.restored.success') ], 200)
+            : response()->json([
+                    'message' => $user->id . trans('messages.restored.failed'),
+                    'errors' => []
+                ], 400);
     }
 }
