@@ -42,4 +42,9 @@ class User extends Authenticatable
 
         return $item;
     }
+
+    public function warehouses()
+    {
+        return $this->belongsToMany('App\Models\Warehouse');
+    }
 }
