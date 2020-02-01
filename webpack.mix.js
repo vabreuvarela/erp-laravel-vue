@@ -1,7 +1,7 @@
-const mix = require('laravel-mix');
-require('laravel-mix-polyfill');
+const mix = require('laravel-mix')
+require('laravel-mix-polyfill')
 
-mix.browserSync('127.0.0.1:8000');
+mix.browserSync('127.0.0.1:8000')
 
 mix.js('resources/js/app.js', 'js')
    .sass('resources/sass/app.scss', 'css')
@@ -12,7 +12,7 @@ mix.js('resources/js/app.js', 'js')
         "firefox": "50",
         "ie": 11
       }
-   });
+   })
 
-mix.sourceMaps();
-mix.version();
+mix.sourceMaps()
+mix.version()

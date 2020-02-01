@@ -2,5 +2,5 @@
 
 use Illuminate\Http\Request;
 
-App\Helpers\RouteHelpers::resource('users', 'user', 'UserController');
-App\Helpers\RouteHelpers::resource('warehouses', 'warehouse', 'WarehouseController');
+App\Helpers\RouteHelpers::resource('user');
+App\Helpers\RouteHelpers::resourceWithRelationships('warehouse', [ 'user' ]);
