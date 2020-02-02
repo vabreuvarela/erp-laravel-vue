@@ -2,24 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 
-        'email', 
+        'name',
+        'email',
         'password',
     ];
 
     protected $hidden = [
-        'password', 
+        'password',
         'remember_token',
     ];
 
@@ -46,5 +47,15 @@ class User extends Authenticatable
     public function warehouses()
     {
         return $this->belongsToMany('App\Models\Warehouse');
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

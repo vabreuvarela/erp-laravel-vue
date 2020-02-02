@@ -22,5 +22,12 @@ return [
     'detached' => [
         'success' =>  ":name detached a relationship successfully.",
         'fail' =>  ":name wasn't detached a relationship successfully.",
+    ],
+    'login' => [
+        'success' =>  "Login successfull",
+        'fail' =>  "Login unsuccessfull",
+    ],
+    'logout' => [
+        'success' =>  "Logged out successfully",
     ]
 ];
