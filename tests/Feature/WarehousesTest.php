@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Warehouse;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class WarehousesTest extends TestCase
@@ -28,7 +28,7 @@ class WarehousesTest extends TestCase
     {
         factory('App\Models\Warehouse')->create();
 
-        $this->json('get', '/api/warehouses')->assertStatus(200);
+        $this->json('get', '/api/warehouse')->assertStatus(200);
     }
 
     /**
@@ -38,7 +38,7 @@ class WarehousesTest extends TestCase
     {
         factory('App\Models\Warehouse')->create();
 
-        $this->json('get', '/api/warehouses/' . Warehouse::select('id')->first()->id)->assertStatus(200);
+        $this->json('get', '/api/warehouse/' . Warehouse::select('id')->first()->id)->assertStatus(200);
     }
 
     /**
@@ -46,13 +46,11 @@ class WarehousesTest extends TestCase
      */
     public function can_create_an_item()
     {
-        $this->json('post', '/api/warehouses', $this->attributes)
+        $this->json('post', '/api/warehouse', $this->attributes)
             ->assertStatus(200)
             ->assertJsonFragment(['name' => $this->attributes['name']]);
 
-        $this->assertDatabaseHas('warehouses', [
-            'name' => $this->attributes['name']
-        ]);
+        $this->assertDatabaseHas('warehouses', ['name' => $this->attributes['name']]);
     }
 
     /**
@@ -62,13 +60,11 @@ class WarehousesTest extends TestCase
     {
         $model = factory('App\Models\Warehouse')->create();
 
-        $this->json('put', '/api/warehouses/' . $model['id'], $this->attributes)
+        $this->json('put', '/api/warehouse/' . $model['id'], $this->attributes)
             ->assertStatus(200)
             ->assertJsonFragment(['name' => $this->attributes['name']]);
 
-        $this->assertDatabaseHas('warehouses', [
-            'name' => $this->attributes['name']
-        ]);
+        $this->assertDatabaseHas('warehouses', ['name' => $this->attributes['name']]);
     }
 
     /**
@@ -78,9 +74,9 @@ class WarehousesTest extends TestCase
     {
         $model = factory('App\Models\Warehouse')->create();
 
-        $this->json('delete', '/api/warehouses/' . $model['id'])->assertStatus(200);
+        $this->json('delete', '/api/warehouse/' . $model['id'])->assertStatus(200);
 
-        $this->assertSoftDeleted('warehouses',  ['name' => $model['name'] ]);	
+        $this->assertSoftDeleted('warehouses',  ['name' => $model['name']]);
     }
 
     /**
@@ -88,8 +84,7 @@ class WarehousesTest extends TestCase
      */
     public function name_is_required_to_create_an_item()
     {
-        $this->json('post', '/api/warehouses', collect($this->attributes)->forget('name')->toArray())
-            ->assertStatus(422);
+        $this->json('post', '/api/warehouse', collect($this->attributes)->forget('name')->toArray())->assertStatus(422);
     }
 
     /**
@@ -97,8 +92,7 @@ class WarehousesTest extends TestCase
      */
     public function debt_is_required_to_create_an_item()
     {
-        $this->json('post', '/api/warehouses', collect($this->attributes)->forget('debt')->toArray())
-            ->assertStatus(422);
+        $this->json('post', '/api/warehouse', collect($this->attributes)->forget('debt')->toArray())->assertStatus(422);
     }
 
     /**
@@ -108,8 +102,7 @@ class WarehousesTest extends TestCase
     {
         $model = factory('App\Models\Warehouse')->create();
 
-        $this->json('put', '/api/warehouses/' . $model['id'], collect($this->attributes)->forget('name')->toArray())
-            ->assertStatus(422);
+        $this->json('put', '/api/warehouse/' . $model['id'], collect($this->attributes)->forget('name')->toArray())->assertStatus(422);
     }
 
     /**
@@ -119,8 +112,6 @@ class WarehousesTest extends TestCase
     {
         $model = factory('App\Models\Warehouse')->create();
 
-        $this->json('put', '/api/warehouses/' . $model['id'], collect($this->attributes)->forget('debt')->toArray())
-            ->assertStatus(422);
+        $this->json('put', '/api/warehouse/' . $model['id'], collect($this->attributes)->forget('debt')->toArray())->assertStatus(422);
     }
-
 }

@@ -5,13 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Warehouse extends Model
+class Product extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
         'name',
-        'debt'
+        'sku',
+        'upc',
+        'cost'
     ];
 
     public static function createOrUpdateItem($request, $item = null)
@@ -25,8 +27,8 @@ class Warehouse extends Model
         return $item;
     }
 
-    public function users()
+    public function attributes()
     {
-        return $this->belongsToMany('App\Models\User');
+        return $this->hasMany('App\Models\Attribute');
     }
 }

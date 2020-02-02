@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreWarehouseRequest;
 use App\Http\Requests\StoreWarehouseUserRelationshipRequest;
 use App\Http\Requests\UpdateWarehouseRequest;
+use App\Models\Attribute;
 use App\Models\Warehouse;
 use Illuminate\Support\Facades\Lang;
 
@@ -58,5 +59,10 @@ class WarehouseController extends Controller
         return $warehouse->users()->detach($id)
             ? response()->json(['message' => Lang::get('messages.detached.success', ['name' => $warehouse->name])], 200)
             : response()->json(['message' => Lang::get('messages.detached.fail', ['name' => $warehouse->name]), 'errors' => []], 400);
+    }
+
+    public function products($warehouseId)
+    {
+        return response()->json([Attribute::where('warehouse_id', $warehouseId)->with('product')->paginate()], 200);
     }
 }

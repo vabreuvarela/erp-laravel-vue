@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Product;
 use App\Models\User;
 use App\Models\Warehouse;
 use Illuminate\Support\ServiceProvider;
@@ -32,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
 
         Route::bind('warehouse', function ($value) {
             return Warehouse::where('id', $value)->with('users')->withTrashed()->firstOrFail();
+        });
+
+        Route::bind('product', function ($value) {
+            return Product::where('id', $value)->with('attributes')->withTrashed()->firstOrFail();
         });
     }
 }

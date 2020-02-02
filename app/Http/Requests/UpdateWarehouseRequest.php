@@ -25,8 +25,8 @@ class UpdateWarehouseRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'debt' => 'required|numeric'
+            'name' => ['required'],
+            'debt' => ['required', 'numeric']
         ];
     }
 }

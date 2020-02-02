@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Warehouse::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
+        'name' => $faker->city,
         'debt' => $faker->randomFloat(2, 0, 10000)
     ];
 });

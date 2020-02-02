@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class UsersTest extends TestCase
@@ -28,7 +28,7 @@ class UsersTest extends TestCase
     {
         factory('App\Models\User')->create();
 
-        $this->json('get', '/api/users')->assertStatus(200);
+        $this->json('get', '/api/user')->assertStatus(200);
     }
 
     /**
@@ -38,7 +38,7 @@ class UsersTest extends TestCase
     {
         factory('App\Models\User')->create();
 
-        $this->json('get', '/api/users/' . User::select('id')->first()->id)->assertStatus(200);
+        $this->json('get', '/api/user/' . User::select('id')->first()->id)->assertStatus(200);
     }
 
     /**
@@ -46,13 +46,11 @@ class UsersTest extends TestCase
      */
     public function can_create_an_item()
     {
-        $this->json('post', '/api/users', $this->attributes)
+        $this->json('post', '/api/user', $this->attributes)
             ->assertStatus(200)
             ->assertJsonFragment(['name' => $this->attributes['name']]);
 
-        $this->assertDatabaseHas('users', [
-            'email' => $this->attributes['email']
-        ]);
+        $this->assertDatabaseHas('users', ['email' => $this->attributes['email']]);
     }
 
     /**
@@ -62,13 +60,11 @@ class UsersTest extends TestCase
     {
         $model = factory('App\Models\User')->create();
 
-        $this->json('put', '/api/users/' . $model['id'], $this->attributes)
+        $this->json('put', '/api/user/' . $model['id'], $this->attributes)
             ->assertStatus(200)
             ->assertJsonFragment(['name' => $this->attributes['name']]);
 
-        $this->assertDatabaseHas('users', [
-            'email' => $this->attributes['email']
-        ]);
+        $this->assertDatabaseHas('users', ['email' => $this->attributes['email']]);
     }
 
     /**
@@ -78,9 +74,9 @@ class UsersTest extends TestCase
     {
         $model = factory('App\Models\User')->create();
 
-        $this->json('delete', '/api/users/' . $model['id'])->assertStatus(200);
+        $this->json('delete', '/api/user/' . $model['id'])->assertStatus(200);
 
-        $this->assertSoftDeleted('users',  ['name' => $model['name'] ]);	
+        $this->assertSoftDeleted('users',  ['name' => $model['name']]);
     }
 
     /**
@@ -88,8 +84,7 @@ class UsersTest extends TestCase
      */
     public function email_is_required_to_create_an_item()
     {
-        $this->json('post', '/api/users', collect($this->attributes)->forget('email')->toArray())
-            ->assertStatus(422);
+        $this->json('post', '/api/user', collect($this->attributes)->forget('email')->toArray())->assertStatus(422);
     }
 
     /**
@@ -97,8 +92,7 @@ class UsersTest extends TestCase
      */
     public function name_is_required_to_create_an_item()
     {
-        $this->json('post', '/api/users', collect($this->attributes)->forget('name')->toArray())
-            ->assertStatus(422);
+        $this->json('post', '/api/user', collect($this->attributes)->forget('name')->toArray())->assertStatus(422);
     }
 
     /**
@@ -106,8 +100,7 @@ class UsersTest extends TestCase
      */
     public function password_is_required_to_create_an_item()
     {
-        $this->json('post', '/api/users', collect($this->attributes)->forget('password')->toArray())
-            ->assertStatus(422);
+        $this->json('post', '/api/user', collect($this->attributes)->forget('password')->toArray())->assertStatus(422);
     }
 
     /**
@@ -117,8 +110,7 @@ class UsersTest extends TestCase
     {
         $model = factory('App\Models\User')->create();
 
-        $this->json('put', '/api/users/' . $model['id'], collect($this->attributes)->forget('name')->toArray())
-            ->assertStatus(422);
+        $this->json('put', '/api/user/' . $model['id'], collect($this->attributes)->forget('name')->toArray())->assertStatus(422);
     }
 
     /**
@@ -128,8 +120,7 @@ class UsersTest extends TestCase
     {
         $model = factory('App\Models\User')->create();
 
-        $this->json('put', '/api/users/' . $model['id'], collect($this->attributes)->forget('email')->toArray())
-            ->assertStatus(422);
+        $this->json('put', '/api/user/' . $model['id'], collect($this->attributes)->forget('email')->toArray())->assertStatus(422);
     }
 
     /**
@@ -139,8 +130,6 @@ class UsersTest extends TestCase
     {
         $model = factory('App\Models\User')->create();
 
-        $this->json('put', '/api/users/' . $model['id'], collect($this->attributes)->forget('password')->toArray())
-            ->assertStatus(200);
+        $this->json('put', '/api/user/' . $model['id'], collect($this->attributes)->forget('password')->toArray())->assertStatus(200);
     }
-
 }

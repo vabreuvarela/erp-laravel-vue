@@ -2,17 +2,17 @@
 
 namespace App\Helpers;
 
-use Route;
 use Illuminate\Support\Str;
+use Route;
 
 class RouteHelpers
 {
-    static function getAction ($resource, $method) 
+    static function getAction($resource, $method)
     {
         return Str::title($resource) . "Controller@" . $method;
     }
 
-    static function resource ($model) 
+    static function resource($model)
     {
         return [
             Route::get($model, self::getAction($model, "index")),
@@ -24,7 +24,7 @@ class RouteHelpers
         ];
     }
 
-    static function resourceWithRelationships ($model, $relationships) 
+    static function resourceWithRelationships($model, $relationships)
     {
         $routes = [];
 
