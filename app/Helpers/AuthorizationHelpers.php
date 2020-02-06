@@ -3,20 +3,21 @@
 namespace App\Helpers;
 
 use App\Models\Warehouse;
+use Illuminate\Support\Facades\Auth;
 
 class AuthorizationHelpers
 {
-    public function isAuthorized(Warehouse $warehouse)
+    public static function isAuthorized(Warehouse $warehouse)
     {
         return self::isAdmin() || self::isWarehouseUser($warehouse);
     }
 
-    public function isWarehouseUser(Warehouse $warehouse)
+    public static function isWarehouseUser(Warehouse $warehouse)
     {
         return Auth::check() && $warehouse->users()->where('id', Auth::user()->id)->exists();
     }
 
-    public function isAdmin()
+    public static function isAdmin()
     {
         return Auth::check() && Auth::user()->is_admin;
     }

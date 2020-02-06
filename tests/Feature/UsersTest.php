@@ -6,11 +6,13 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Tests\Traits\AttachJwtToken;
 
 class UsersTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
+    use AttachJwtToken;
 
     protected $attributes;
 
@@ -21,31 +23,33 @@ class UsersTest extends TestCase
         $this->attributes = factory('App\Models\User')->raw();
     }
 
-    /**
-     * @test
-     */
-    public function can_get_all_items()
+    public function testAdminCanGetAllItems()
     {
-        factory('App\Models\User')->create();
-
+        $this->loginAs(factory('App\Models\User')->create(['is_admin' => true]));
         $this->json('get', '/api/user')->assertStatus(200);
     }
 
-    /**
-     * @test
-     */
-    public function can_get_an_item()
+    public function testVisitorCantGetAllItems()
     {
-        factory('App\Models\User')->create();
+        $this->json('get', '/api/user')->assertStatus(403);
+    }
 
+    public function testAdminCanGetAnItem()
+    {
+        $this->loginAs(factory('App\Models\User')->create(['is_admin' => true]));
         $this->json('get', '/api/user/' . User::select('id')->first()->id)->assertStatus(200);
     }
 
-    /**
-     * @test
-     */
-    public function can_create_an_item()
+    public function testVisitorCantGetAnItem()
     {
+        factory('App\Models\User')->create();
+        $this->json('get', '/api/user/' . User::select('id')->first()->id)->assertStatus(403);
+    }
+
+    public function testAdminCanCreateAnItem()
+    {
+        $this->loginAs(factory('App\Models\User')->create(['is_admin' => true]));
+
         $this->json('post', '/api/user', $this->attributes)
             ->assertStatus(200)
             ->assertJsonFragment(['name' => $this->attributes['name']]);
@@ -53,11 +57,16 @@ class UsersTest extends TestCase
         $this->assertDatabaseHas('users', ['email' => $this->attributes['email']]);
     }
 
-    /**
-     * @test
-     */
-    public function can_update_an_item()
+    public function testVisitorCantCreateAnItem()
     {
+        $this->json('post', '/api/user', $this->attributes)
+            ->assertStatus(403);
+    }
+
+    public function testAdminCanUpdateAnItem()
+    {
+        $this->loginAs(factory('App\Models\User')->create(['is_admin' => true]));
+
         $model = factory('App\Models\User')->create();
 
         $this->json('put', '/api/user/' . $model['id'], $this->attributes)
@@ -67,11 +76,18 @@ class UsersTest extends TestCase
         $this->assertDatabaseHas('users', ['email' => $this->attributes['email']]);
     }
 
-    /**
-     * @test
-     */
-    public function can_delete_an_item()
+    public function testVisitorCantUpdateAnItem()
     {
+        $model = factory('App\Models\User')->create();
+
+        $this->json('put', '/api/user/' . $model['id'], $this->attributes)
+            ->assertStatus(403);
+    }
+
+    public function testAdminCanDeleteAnItem()
+    {
+        $this->loginAs(factory('App\Models\User')->create(['is_admin' => true]));
+
         $model = factory('App\Models\User')->create();
 
         $this->json('delete', '/api/user/' . $model['id'])->assertStatus(200);
@@ -79,56 +95,58 @@ class UsersTest extends TestCase
         $this->assertSoftDeleted('users',  ['name' => $model['name']]);
     }
 
-    /**
-     * @test
-     */
-    public function email_is_required_to_create_an_item()
+    public function testVisitorCantDeleteAnItem()
     {
+        $model = factory('App\Models\User')->create();
+
+        $this->json('delete', '/api/user/' . $model['id'])->assertStatus(403);
+    }
+
+    public function testEmailIsRequiredToCreateAnItem()
+    {
+        $this->loginAs(factory('App\Models\User')->create(['is_admin' => true]));
+
         $this->json('post', '/api/user', collect($this->attributes)->forget('email')->toArray())->assertStatus(422);
     }
 
-    /**
-     * @test
-     */
-    public function name_is_required_to_create_an_item()
+    public function testNameIsRequiredToCreateAnItem()
     {
+        $this->loginAs(factory('App\Models\User')->create(['is_admin' => true]));
+
         $this->json('post', '/api/user', collect($this->attributes)->forget('name')->toArray())->assertStatus(422);
     }
 
-    /**
-     * @test
-     */
-    public function password_is_required_to_create_an_item()
+    public function testPasswordIsRequiredToCreateAnItem()
     {
+        $this->loginAs(factory('App\Models\User')->create(['is_admin' => true]));
+
         $this->json('post', '/api/user', collect($this->attributes)->forget('password')->toArray())->assertStatus(422);
     }
 
-    /**
-     * @test
-     */
-    public function name_is_required_to_update_an_item()
+    public function testNameIsRequiredToUpdateAnItem()
     {
+
         $model = factory('App\Models\User')->create();
+
+        $this->loginAs(factory('App\Models\User')->create(['is_admin' => true]));
 
         $this->json('put', '/api/user/' . $model['id'], collect($this->attributes)->forget('name')->toArray())->assertStatus(422);
     }
 
-    /**
-     * @test
-     */
-    public function email_is_required_to_update_an_item()
+    public function testEmailIsRequiredToUpdateAnItem()
     {
         $model = factory('App\Models\User')->create();
+
+        $this->loginAs(factory('App\Models\User')->create(['is_admin' => true]));
 
         $this->json('put', '/api/user/' . $model['id'], collect($this->attributes)->forget('email')->toArray())->assertStatus(422);
     }
 
-    /**
-     * @test
-     */
-    public function password_is_not_required_to_update_an_item()
+    public function testPasswordIsRequiredToUpdateAnItem()
     {
         $model = factory('App\Models\User')->create();
+
+        $this->loginAs(factory('App\Models\User')->create(['is_admin' => true]));
 
         $this->json('put', '/api/user/' . $model['id'], collect($this->attributes)->forget('password')->toArray())->assertStatus(200);
     }
